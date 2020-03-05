@@ -1,0 +1,23 @@
+﻿@page "/"
+
+<InputFile OnChange="ReadFileAsync" />
+
+@if (!(string.IsNullOrEmpty(RawText)))
+{
+    <SudokuBoard RawText="@RawText"/>
+}
+
+@code {
+    public string RawText { get; set; }
+
+    private async Task ReadFileAsync(IFileListEntry[] files)
+    {
+        if (files.FirstOrDefault() is IFileListEntry file)
+        {
+            using (var reader = new StreamReader(file.Data))
+            {
+                RawText = await reader.ReadLineAsync();
+            }
+        }
+    }
+}

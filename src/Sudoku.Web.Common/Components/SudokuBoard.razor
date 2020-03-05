@@ -1,0 +1,61 @@
+﻿<div class="sudoku-board">
+    @if (!(board is null))
+    {
+        for (int x = 0; x < board.GetLength(0); x++)
+        {
+            for (int y = 0; y < board.GetLength(0); y++)
+            {
+                int _x = x, _y = y;
+                if (RawText[(x * 9) + y] is '0')
+                {
+                    bool unsolved = board[_x, _y] is '0';
+                    <div class="sudoku-board-item" X="@_x" Y="@_y" unsolved="@unsolved" solved="@(!unsolved)">
+                        @board[_x, _y]
+                    </div>
+                }
+                else
+                {
+                    <div class="sudoku-board-item" X="@_x" Y="@_y">
+                        @board[_x, _y]
+                    </div>
+                }
+            }
+        }
+    }
+</div>
+<div class="sudoku-board-controls">
+    <button @onclick="SolveSudoku">
+        <p>Solucionar</p>
+    </button>
+</div>
+
+@code {
+    private char[,] board { get; set; }
+
+    [Parameter]
+    public string RawText { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        board = new char[9, 9];
+        for (int x = 0; x < board.GetLength(0); x++)
+        {
+            for (int y = 0; y < board.GetLength(0); y++)
+            {
+                board[x, y] = RawText[(x * board.GetLength(0)) + y];
+            }
+        }
+    }
+
+    private void SolveSudoku()
+    {
+        var ia = new SudokuIA(board);
+        ia.SolveSudoku();
+        board = ia.GetResult();
+
+        StateHasChanged();
+    }
+}
