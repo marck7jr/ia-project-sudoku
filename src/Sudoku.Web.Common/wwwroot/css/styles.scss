@@ -1,4 +1,15 @@
 ﻿$neumorphismBoxShadow: 20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff;
+$borderItemColor: #dfdfdf;
+$borderAreaColor: black;
+
+@mixin borderItem($color, $orientation) {
+    @if $orientation == "top" {
+        border-top: 1px solid $color;
+    }
+    @else if $orientation == "left" {
+        border-left: 1px solid $color;
+    }
+}
 
 @mixin neumorphism {
     background: none;
@@ -25,15 +36,25 @@ body {
         padding: 1em;
 
         &-item {
-            border-top: 1px solid #dfdfdf;
-            border-left: 1px solid #dfdfdf;
             background: rgba(black, .1);
             padding: 1em;
+            @include borderItem($borderItemColor, "top");
+            @include borderItem($borderItemColor, "left");
+
+            @for $i from 1 to 3 {
+                &[X="#{$i * 3}"] {
+                    @include borderItem($borderAreaColor, "top");
+                }
+
+                &[Y="#{$i * 3}"] {
+                    @include borderItem($borderAreaColor, "left");
+                }
+            }
 
             &[unsolved] {
                 color: red;
             }
-            
+
             &[solved] {
                 color: green;
             }
